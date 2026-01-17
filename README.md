@@ -132,7 +132,7 @@ cd client
 npm install
 
 # Install backend dependencies
-cd server
+cd backend
 npm install
 ```
 
@@ -140,7 +140,7 @@ npm install
 
 ```bash
 # Start backend
-npm run server
+node app.js
 
 # Start frontend
 npm run dev

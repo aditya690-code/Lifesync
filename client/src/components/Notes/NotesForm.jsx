@@ -32,20 +32,20 @@ const NotesForm = ({ form, setForm, addNote }) => {
   const handleChange = (e) => {
     setContent(e.target.value);
 
-    e.target.style.height = "auto"; // reset
+    e.target.style.height = "auto";
     e.target.style.height = `${e.target.scrollHeight}px`;
   };
 
   return (
-    <div className="w-full rounded-xl shadow-lg p-4">
+    <div className="w-[97%] mx-auto mt-6 px-6 rounded-xl bg-white shadow-lg p-4">
       {/* Header */}
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end w-full bg-amber-200">
         {/* <h2 className="text-lg font-semibold text-gray-800">New Note</h2> */}
         <button
           onClick={() => setForm(false)}
           className="p-1 rounded-full hover:bg-gray-200 cursor-pointer"
         >
-          <X size={18} />
+          <X size={25} />
         </button>
       </div>
 
@@ -55,7 +55,7 @@ const NotesForm = ({ form, setForm, addNote }) => {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full px-3 py-2 outline-none border-none text-xl"
+        className="w-full px-3 py-2 outline-none border-none text-xl bg-sky-400"
       />
 
       {/* Content */}
@@ -71,7 +71,7 @@ const NotesForm = ({ form, setForm, addNote }) => {
         placeholder="Write your note..."
         value={content}
         onChange={handleChange}
-        className="w-full px-3 py-2 border-none resize-none outline-none bg-amber-200 no-scrollbar overflow-hidden"
+        className="w-full px-3 max-h-110 overflow-y-auto py-2 border-none resize-none outline-none bg-amber-200 no-scrollbar overflow-hidden"
       />
       {/* Error */}
       {error && <p className="text-sm text-red-500">{error}</p>}
