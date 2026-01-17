@@ -6,6 +6,7 @@ import CalendarGrid from "../components/Calendar/CalendarGrid";
 import CalendarList from "../components/Calendar/CalendarList";
 import { setEntry } from "../redux/features/diary/diarySlice";
 import { handleLayout } from "../services/function";
+import Layout from "../components/shared/Layout";
 
 const days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 const monthNames = [
@@ -385,22 +386,10 @@ export default function Calendar() {
                 Journal
               </p>
             </div>
-            <div className="right w-[16%] h-10/12 flex justify-evenly items-center mr-4 bg-[#f1f1f1]">
-              <LayoutList
-                onClick={() => handleLayout("list",setActiveLayout)}
-                size={30}
-                className={`${
-                  activeLayout === "list" ? "bg-white " : ""
-                } cursor-pointer p-1.5 rounded-sm`}
-              />
-              <LayoutGrid
-                onClick={() => handleLayout("grid",setActiveLayout)}
-                size={30}
-                className={`${
-                  activeLayout === "grid" ? "bg-white " : ""
-                } cursor-pointer p-1.5 rounded-sm`}
-              />
+            <div className="h-10/12 w-[16%]">
+                <Layout activeLayout={activeLayout} setActiveLayout={setActiveLayout} handleLayout={handleLayout} />  
             </div>
+
           </div>
 
           {/* Bottom Bottom */}

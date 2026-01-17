@@ -2,6 +2,7 @@ import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import {
   Book,
+  Bot,
   Calendar,
   Github,
   Home,
@@ -72,6 +73,11 @@ const Sidebar = ({ handleSidebar }) => {
             {" "}
             <Calendar size={18} />
             Calendar{" "}
+          </Link>
+          <Link to={"/chatbot"} className="nav-link" onClick={handleSidebar}>
+            {" "}
+            <Bot size={18} />
+            Assistant{" "}
           </Link>
           <Link to={"/security"} className="nav-link" onClick={handleSidebar}>
             {" "}

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X } from "lucide-react";
+import { SaveIcon, X } from "lucide-react";
 
 const NotesForm = ({ form, setForm, addNote }) => {
   const [title, setTitle] = useState("");
@@ -37,15 +37,19 @@ const NotesForm = ({ form, setForm, addNote }) => {
   };
 
   return (
-    <div className="w-[97%] mx-auto mt-6 px-6 rounded-xl bg-white shadow-lg p-4">
-      {/* Header */}
-      <div className="flex items-center justify-end w-full bg-amber-200">
-        {/* <h2 className="text-lg font-semibold text-gray-800">New Note</h2> */}
+    <div className="w-[97%] mx-auto mt-6 rounded-xl bg-white shadow-sm shadow-gray-100 py-4 pt-0">
+      {/* Actions */}
+      <div className="flex justify-end gap-2 pt-2 w-full px-8">
         <button
-          onClick={() => setForm(false)}
-          className="p-1 rounded-full hover:bg-gray-200 cursor-pointer"
+          onClick={handleAdd}
+          className="px-6 py-2 rounded-lg cursor-pointer my-2
+          text-white bg-indigo-600 
+            transition-all duration-300 active:scale-95 
+            flex items-center gap-3"
         >
-          <X size={25} />
+          Save
+          <SaveIcon size={20} />
+          
         </button>
       </div>
 
@@ -55,42 +59,20 @@ const NotesForm = ({ form, setForm, addNote }) => {
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full px-3 py-2 outline-none border-none text-xl bg-sky-400"
+        className="w-full px-3 pl-6 text-lg py-1 outline-none border-none placeholder:text-gray-300 font-medium"
       />
 
       {/* Content */}
-      {/* <textarea
-        placeholder="Write your note..."
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        rows={4}
-        
-        className="w-full px-3 py-2 border-none resize-none outline-none h-fit bg-amber-200 no-scrollbar"
-      /> */}
       <textarea
         placeholder="Write your note..."
         value={content}
         onChange={handleChange}
-        className="w-full px-3 max-h-110 overflow-y-auto py-2 border-none resize-none outline-none bg-amber-200 no-scrollbar overflow-hidden"
+        className="w-full px-3 max-h-110 pl-6 text-sm placeholder:text-gray-300 placeholder:text-sm
+              overflow-y-auto py-2 border-none resize-none outline-none no-scrollbar overflow-hidden
+              "
       />
       {/* Error */}
-      {error && <p className="text-sm text-red-500">{error}</p>}
-
-      {/* Actions */}
-      <div className="flex justify-end gap-2 pt-2">
-        <button
-          onClick={() => setForm(false)}
-          className="px-4 py-2 rounded-lg text-gray-600 hover:bg-gray-100"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleAdd}
-          className="px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
-        >
-          Add Note
-        </button>
-      </div>
+        {error && <p className="text-sm text-red-500 w-full pl-12">{error}</p>}
     </div>
   );
 };
