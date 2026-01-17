@@ -1,20 +1,14 @@
 import {
-  LayoutGrid,
-  LayoutList,
   Plus,
-  SearchIcon,
   X,
-  XCircle,
 } from "lucide-react";
 import React, { useState } from "react";
 import { handleLayout } from "../../services/function";
 import SearchBar from "../shared/SearchBar";
 import Layout from "../shared/Layout";
 
-const NotesUpper = ({ setForm }) => {
-  const layoutStr = localStorage.getItem("layout") || "list";
+const NotesUpper = ({ setForm,layout,setLayout }) => {
   const [icon, setIcon] = useState(true);
-  const [layout, setLayout] = useState(layoutStr);
   const [searchText, setSearchText] = useState("");
 
   return (
@@ -24,7 +18,7 @@ const NotesUpper = ({ setForm }) => {
         {/* Search */}
         <SearchBar searchText={searchText} setSearchText={setSearchText} />
         {/* Layout button */}
-        <div className="w-[16%] h-full">
+        <div className="w-[16%] h-full border rounded overflow-hidden">
           <Layout
             activeLayout={layout}
             handleLayout={handleLayout}
