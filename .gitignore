@@ -49,3 +49,7 @@ backend/build/
 # ========================
 *.tgz
 *.swp
+
+
+# 
+error.jsx

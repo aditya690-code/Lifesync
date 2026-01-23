@@ -1,27 +1,29 @@
 import "./index.css";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
-import Home from "./pages/Home";
+import Entry from "./pages/Entry";
+import Sidebar from "./pages/Sidebar.jsx";
 import Nav from "./components/Navbar/Nav";
+import Home from "./pages/Home";
+import Verification from "./pages/Verification.jsx";
 import Diary from "./pages/Diary";
 import ToDo from "./pages/ToDo";
 import Notes from "./pages/Notes";
 import Expenses from "./pages/Expenses";
-import Entry from "./pages/Entry";
-import Ai from "./pages/Ai.jsx";
-import { expenses, tasks, notes, diaries } from "./services/data";
-import Verification from "./pages/Verification.jsx";
 import Calendar from "./pages/Calendar.jsx";
-import Sidebar from "./pages/Sidebar.jsx";
-import Security from "./pages/Security.jsx";
+import Ai from "./pages/Ai.jsx";
 import AiPage from "./pages/AiPage.jsx";
+import Security from "./pages/Security.jsx";
+import { expenses, tasks, notes, diaries } from "./services/data";
 
 function App() {
-  const [access, setAccess] = useState(true);
+  localStorage.setItem("access", false);
+  const [access, setAccess] = useState(localStorage.getItem("access") || false);
   const [sidebar, setSidebar] = useState(false);
 
   function changeAccess(st) {
     setAccess(st);
+    localStorage.setItem("access", st);
   }
 
   function handleSidebar() {

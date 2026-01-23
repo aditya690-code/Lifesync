@@ -6,7 +6,7 @@ const CalendarList = ({ data }) => {
   }
 
   return (
-    <div className="bottom w-full h-full flex-1 flex justify-center items-start flex-wrap no-scrollbar overflow-auto pb-0">
+    <div className="bottom w-full flex-1 flex justify-center items-start flex-wrap no-scrollbar overflow-auto pb-0">
       {/* Items */}
       
       {data.map((item, i) => {

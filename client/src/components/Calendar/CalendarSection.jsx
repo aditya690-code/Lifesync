@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
-const CalendarSection = () => {
+const CalendarSection = ({activeDate,setActiveDate}) => {
   const today = new Date();
   const getDay = (idx) => {
     return days[idx];
@@ -19,12 +19,7 @@ const CalendarSection = () => {
   const [currentDate, setCurrentDate] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1),
   );
-  const [activeDate, setActiveDate] = useState({
-    day: getDay(today.getDay()),
-    date: today.getDate(),
-    month: monthNames[today.getMonth()],
-    year: today.getFullYear(),
-  });
+
 
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
@@ -135,7 +130,7 @@ const CalendarSection = () => {
               <div
                 key={date}
                 className={`cursor-pointer h-20 w-15 rounded-2xl border flex flex-col items-center justify-center flex-wrap gap-2 text-lg font-semibold
-                        ${isToday ? "bg-indigo-100" : "border-gray-200"}
+                        ${isToday ? "bg-indigo-50 text-indigo-600" : "border-gray-200"}
                         ${
                           activeDate.date === date &&
                           activeDate.month === monthNames[month] &&
@@ -172,6 +167,7 @@ const CalendarSection = () => {
               </div>
             );
           })}
+          {/* Display color - Denoted */}
           <div className="absolute w-[80%] h-5 bottom-2 flex gap-4 justify-center">
             <div className="flex items-center gap-1">
               <p className="h-2 w-2 rounded-full bg-green-400"></p>
