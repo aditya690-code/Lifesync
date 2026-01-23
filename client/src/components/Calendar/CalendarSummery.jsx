@@ -14,7 +14,7 @@ const CalendarSummery = ({ activeDate }) => {
   const [activeLayout, setActiveLayout] = useState("list");
   const [isForm, setIsForm] = useState(false);
   const [formTitle, setFormTitle] = useState("");
-  const [formAmount, setFormAmount] = useState(0);
+  const [formAmount, setFormAmount] = useState("");
   const [formDesc, setFormDesc] = useState("");
   const [error, setError] = useState(false);
 
@@ -22,10 +22,20 @@ const CalendarSummery = ({ activeDate }) => {
     localStorage.setItem("layout", layout);
     setLayout(layout);
   };
+
   const handleText = (text) => {
     setActiveText(text);
   };
-  const handleCalendarForm = () => {};
+
+  const handleCalendarForm = () => {
+    console.log("Title", formTitle);
+    console.log("content", formDesc);
+    if (activeText === "expenses") console.log("amount", formAmount);
+    setFormTitle("");
+    setFormDesc("");
+    setFormAmount("");
+  };
+
   return (
     <div className="right w-2xl h-[calc(100vh-7rem)] rounded-3xl bg-white p-4 flex flex-col justify-center">
       <h2 className="w-full p-5 px-6 text-xl font-medium rounded-t-3xl">
@@ -160,13 +170,17 @@ const CalendarSummery = ({ activeDate }) => {
               <button
                 onClick={() => {
                   if (
-                    !formTitle.trim() &&
-                    !formDesc.trim() &&
-                    !formAmount.trim()
+                    !formTitle.trim() ||
+                    !formDesc.trim() ||
+                    (activeText === "expenses" &&
+                      (formAmount === null ||
+                        formAmount === undefined ||
+                        formAmount <= 0))
                   ) {
                     setError(true);
                     return;
                   }
+                  setError(false);
                   handleCalendarForm();
                 }}
                 className="w-full bg-indigo-600 
