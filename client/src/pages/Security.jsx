@@ -1,145 +1,144 @@
 import React, { useState } from "react";
 
 const Security = () => {
-  const [enabled, setEnabled] = useState(false);
-  const [savedPass, setSavedPass] = useState(null);
+  const [enabled, setEnabled] = useState(
+    localStorage.getItem("access") || false,
+  );
+  const [lockForm, setLockForm] = useState(false);
+  const [changePassForm, setChangePassForm] = useState(false);
 
-  const [current, setCurrent] = useState("");
   const [pass, setPass] = useState("");
-  const [confirm, setConfirm] = useState("");
+  const [confirmPass, setConPass] = useState("");
 
-  const clear = () => {
-    setCurrent("");
+  const [currPass, setCurrPass] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [confiNewPass, setConfiNewPass] = useState("");
+
+  const handleLock = () => {
+    if (enabled) {
+      setEnabled(false);
+    } else {
+      setLockForm(true);
+    }
+  };
+
+  const handleLockForm = () => {
+    if (pass != confirmPass) return;
+    localStorage.setItem("pass", pass);
+    localStorage.setItem("access", false);
     setPass("");
-    setConfirm("");
-  };
-
-  const enableLock = () => {
-    if (pass.length < 4) return alert("Passcode must be 4+ digits");
-    if (pass !== confirm) return alert("Passcodes do not match");
-    setSavedPass(pass);
+    setConPass("");
+    setLockForm(false);
     setEnabled(true);
-    clear();
   };
 
-  const changePass = () => {
-    if (current !== savedPass) return alert("Wrong current passcode");
-    if (pass.length < 4) return alert("Passcode must be 4+ digits");
-    if (pass !== confirm) return alert("Passcodes do not match");
-    setSavedPass(pass);
-    clear();
-  };
-
-  const resetLock = () => {
-    if (current !== savedPass) return alert("Wrong passcode");
-    setSavedPass(null);
-    setEnabled(false);
-    clear();
+  const handleChangeLockForm = () => {
+    if (currPass == "" || newPass == "" || confiNewPass == "") return;
+    const pass = localStorage.getItem("pass");
+    if (pass === currPass && newPass === confiNewPass) {
+      localStorage.setItem("pass", newPass);
+    }
+    setCurrPass("");
+    setNewPass("");
+    setConfiNewPass("");
+    setChangePassForm(false);
   };
 
   return (
-    <div className="w-full min-h-screen bg-zinc-100 p-4">
-      <div className="max-w-md mx-auto space-y-6">
+    <div className="w-full h-[calc(100vh-6rem) px-12 py-6 flex flex-col justify-start items-center gap-4">
+      <div className="secu-header w-full text-start">
+        <h2 className="text-3xl font-bold">Security</h2>
+        <p className="text-xs font-medium text-gray-500 pl-1">
+          Protect your app with an extra layer of security
+        </p>
+      </div>
 
-        {/* Header */}
-        <div>
-          <h1 className="text-2xl font-semibold">Security</h1>
-          <p className="text-sm text-zinc-500">
-            Protect your app with an extra layer of security
-          </p>
-        </div>
-
-        {/* App Lock Card */}
-        <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium">App Lock</p>
-              <p className="text-sm text-zinc-500">
-                Require passcode to open the app
+      <div className="w-full flex flex-col gap-0 bg-gray-300  mt-5 rounded-2xl overflow-hidden">
+        {/* Lock section */}
+        <div className="w-full h-24 bg--600 overflow-hidden py-4 flex justify-between items-center">
+          <div className="left-infos py-3 px-5">
+            <h2 className="text-2xl font-semibold">App Lock</h2>
+            <p className="text-xs pl-1 text-gray-600">
+              Require passcode to open the app
+            </p>
+          </div>
+          <div className="flex gap-4  items-end">
+            {enabled && (
+              <p
+                className="text-sm cursor-pointer text-gray-700 opacity-80 hover:opacity-100 transition-all duration-300 ease-in-out active:scale-95"
+                onClick={() => setChangePassForm(true)}
+              >
+                Change Password
               </p>
+            )}
+            <div className="right-checkbox bg-gray-200 flex gap-0 mr-12 rounded-full">
+              <div
+                className={`${enabled ? "opacity-0" : "opacity-100"} h-6 w-6 bg-gray-500 rounded-full cursor-pointer`}
+                onClick={handleLock}
+              ></div>
+              <div
+                className={`${enabled ? "opacity-100" : "opacity-0"} h-6 w-6 bg-gray-500 rounded-full cursor-pointer`}
+                onClick={handleLock}
+              ></div>
             </div>
-
-            {/* Toggle */}
+          </div>
+        </div>
+        {lockForm && (
+          <div className="bg-ed-300 w-full flex flex-col gap-2">
+            <input
+              type="password"
+              className="w-full bg--300 px-2 pl-4 py-2 outline-none border-none placeholder:text-gray-500"
+              placeholder="Password"
+              value={pass}
+              onChange={(e) => {
+                setPass(e.target.value);
+              }}
+            />
+            <input
+              type="text"
+              className="w-full bg--300 px-2 pl-4 py-2 outline-none border-none placeholder:text-gray-500"
+              placeholder="Confirm password"
+              value={confirmPass}
+              onChange={(e) => {
+                setConPass(e.target.value);
+              }}
+            />
             <button
-              onClick={() => setEnabled(!enabled)}
-              className={`w-12 h-6 rounded-full relative transition ${
-                enabled ? "bg-black" : "bg-zinc-300"
-              }`}
+              className="px-2 py-4 bg-indigo-600 w-full text-white cursor-pointer font-medium"
+              onClick={handleLockForm}
             >
-              <span
-                className={`absolute top-1 left-1 w-4 h-4 bg-white rounded-full transition ${
-                  enabled ? "translate-x-6" : ""
-                }`}
-              />
+              Set Password
             </button>
           </div>
-
-          {/* Enable Lock */}
-          {enabled && !savedPass && (
-            <div className="space-y-3 pt-4 border-t">
-              <input
-                type="password"
-                placeholder="Create passcode"
-                value={pass}
-                onChange={(e) => setPass(e.target.value)}
-                className="w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <input
-                type="password"
-                placeholder="Confirm passcode"
-                value={confirm}
-                onChange={(e) => setConfirm(e.target.value)}
-                className="w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-black"
-              />
-              <button
-                onClick={enableLock}
-                className="w-full py-3 rounded-xl bg-black text-white font-medium"
-              >
-                Enable App Lock
-              </button>
-            </div>
-          )}
-        </div>
-
-        {/* Manage Passcode */}
-        {savedPass && (
-          <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
-            <p className="font-medium">Manage Passcode</p>
-
+        )}
+        {changePassForm && (
+          <div>
             <input
               type="password"
-              placeholder="Current passcode"
-              value={current}
-              onChange={(e) => setCurrent(e.target.value)}
-              className="w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full bg--300 px-2 pl-4 py-2 outline-none border-none placeholder:text-gray-500"
+              placeholder="Current password"
+              value={currPass}
+              onChange={(e) => setCurrPass(e.target.value)}
             />
             <input
               type="password"
-              placeholder="New passcode"
-              value={pass}
-              onChange={(e) => setPass(e.target.value)}
-              className="w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-black"
+              className="w-full bg--300 px-2 pl-4 py-2 outline-none border-none placeholder:text-gray-500"
+              placeholder="New password"
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
             />
             <input
-              type="password"
-              placeholder="Confirm new passcode"
-              value={confirm}
-              onChange={(e) => setConfirm(e.target.value)}
-              className="w-full p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-black"
+              type="text"
+              className="w-full bg--300 px-2 pl-4 py-2 outline-none border-none placeholder:text-gray-500"
+              placeholder="Confirm new password"
+              value={confiNewPass}
+              onChange={(e) => setConfiNewPass(e.target.value)}
             />
-
             <button
-              onClick={changePass}
-              className="w-full py-3 rounded-xl bg-zinc-900 text-white"
+              onClick={handleChangeLockForm}
+              className="px-2 py-4 bg-indigo-600 w-full text-white cursor-pointer mt-1 font-medium active:opacity-90 transition-all duration-300"
             >
-              Change Passcode
-            </button>
-
-            <button
-              onClick={resetLock}
-              className="w-full py-3 rounded-xl border border-red-500 text-red-500"
-            >
-              Disable App Lock
+              Change Password
             </button>
           </div>
         )}

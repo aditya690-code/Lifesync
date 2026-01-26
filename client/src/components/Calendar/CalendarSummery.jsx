@@ -1,14 +1,21 @@
-import { CheckSquare, IndianRupee, Plus, X } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import {
+  CheckSquare,
+  IndianRupee,
+  Loader2,
+  Plus,
+  Sparkles,
+  X,
+} from "lucide-react";
+import { useEffect, useState } from "react";
 import Layout from "../shared/Layout";
 import CalendarList from "./CalendarList";
 import CalendarGrid from "./CalendarGrid";
-import { monthNames } from "../../services/calendar";
+// import { monthNames } from "../../services/calendar";
 import { useSelector } from "react-redux";
 
 const CalendarSummery = ({ activeDate }) => {
-  const spend = [];
-  const [progress, setProgress] = useState(45);
+  const [spend, setSpend] = useState([]);
+  const [progress, setProgress] = useState(0);
   const [activeText, setActiveText] = useState(
     localStorage.getItem("text") || "expenses",
   );
@@ -19,38 +26,31 @@ const CalendarSummery = ({ activeDate }) => {
   const [formAmount, setFormAmount] = useState("");
   const [formDesc, setFormDesc] = useState("");
   const [error, setError] = useState(false);
+  const [loadingTip, setLoadingTip] = useState(false);
 
   // Data
   const todo = useSelector((state) => state.todo.todo);
   const expenses = useSelector((state) => state.expenses.expenses);
   const notes = useSelector((state) => state.notes.notes);
   const diaries = useSelector((state) => state.diary.entry);
+  // const findAt = (mn) => monthNames.indexOf(mn) + 1;
 
-  useEffect(() => {
-    if (activeText == "tasks") {
-      setData(todo);
-    } else if (activeText === "expenses") {
-      setData(expenses);
-    } else if (activeText === "notes") {
-      setData(notes);
-    } else if (activeText === "diary") {
-      setData(diaries);
-    }
-  }, [activeText, data]);
+  const setDataByDate = (date, data) => {
+    let filterDb = [];
 
-  const handleLayout = (layout, setLayout) => {
-    localStorage.setItem("layout", layout);
-    setLayout(layout);
+    data.filter((item) => {
+      const dt = item.createdAt;
+      if (
+        dt.date === date.date &&
+        dt.month === date.monthIdx &&
+        dt.year === date.year
+      ) {
+        filterDb.push(item);
+      }
+    });
+
+    return filterDb;
   };
-
-  const handleText = (text) => {
-    setActiveText(text);
-    localStorage.setItem('text',text)
-  };
-
-  const findAt = (mn) => monthNames.indexOf(mn) + 1;
-
-  const setDataByDate = () => {};
 
   const findCompleted = (db) => {
     return db.filter((item) => item.isDone == true);
@@ -64,23 +64,96 @@ const CalendarSummery = ({ activeDate }) => {
     setProgress(newProgress);
   };
 
+  useEffect(() => {
+    let source = [];
+
+    switch (activeText) {
+      case "tasks":
+        source = todo;
+        break;
+      case "expenses":
+        source = expenses;
+        break;
+      case "notes":
+        source = notes;
+        break;
+      case "diary":
+        source = diaries;
+        break;
+      default:
+        source = [];
+    }
+    handleProgress(activeDate);
+    setSpend(setDataByDate(activeDate, expenses));
+    setData(setDataByDate(activeDate, source));
+  }, [activeText, activeDate]);
+
+  const handleLayout = (layout, setLayout) => {
+    localStorage.setItem("layout", layout);
+    setLayout(layout);
+  };
+
+  const handleText = (text) => {
+    setActiveText(text);
+    localStorage.setItem("text", text);
+  };
+
   // Manage form
   const handleCalendarForm = () => {
-    console.log("Title", formTitle);
-    console.log("content", formDesc);
-    if (activeText === "expenses") console.log("amount", formAmount);
+    switch (activeText) {
+      case "tasks":
+        console.log("task added");
+        console.log("Title", formTitle);
+        console.log("content", formDesc);
+        break;
+      case "expenses":
+        console.log("Title", formTitle);
+        console.log("content", formDesc);
+        console.log("amount", formAmount);
+        break;
+      case "notes":
+        console.log("Title", formTitle);
+        console.log("content", formDesc);
+        break;
+      case "diary":
+        console.log("Title", formTitle);
+        console.log("content", formDesc);
+        break;
+      default:
+        console.log("something went wrong");
+        break;
+    }
+
     setFormTitle("");
     setFormDesc("");
     setFormAmount("");
   };
 
+  const handleAnalyze = () => setLoadingTip((prev) => !prev);
+
   return (
     <div className="right w-2xl h-[calc(100vh-7rem)] rounded-3xl bg-white p-4 flex flex-col justify-center">
-      <h2 className="w-full p-5 px-6 text-xl font-medium rounded-t-3xl">
-        {`${activeDate.day.slice(0, 3)}, ${activeDate.date} ${
-          activeDate.month
-        } ${activeDate.year}`}
-      </h2>
+      <div className="w-full h-fit flex justify-between items-center">
+        <h2 className="w-full p-5 px-6 text-xl font-medium rounded-t-3xl">
+          {`${activeDate.day.slice(0, 3)}, ${activeDate.date} ${
+            activeDate.month
+          } ${activeDate.year}`}
+        </h2>
+        <p>
+          {loadingTip ? (
+            <Loader2
+              size={30}
+              className="text-[#7E22CE] cursor-progress animate-spin p-1.5"
+            />
+          ) : (
+            <Sparkles
+              size={30}
+              onClick={handleAnalyze}
+              className="text-[#7E22CE] cursor-pointer hover:bg-[#7875753d] p-1.5 rounded-full transition"
+            />
+          )}{" "}
+        </p>
+      </div>
 
       {/* Top */}
       <div className="top h-40 w-full p-4 px-0 flex justify-center gap-5">
@@ -116,7 +189,7 @@ const CalendarSummery = ({ activeDate }) => {
 
       {/* Bottom */}
       <div className="bottom h-[60%] flex-1 flex flex-col justify-start  bg-gray-200 rounded-2xl items-center px-0 p-5 pb-0">
-        {/* Bottom Top */} 
+        {/* Bottom Top */}
         <div className="top w-full h-[15%] flex gap-2 justify-between  items-center mb-2 px-5">
           <div className="left flex w-[80%] h-full p-1 gap-2 px-5">
             <p

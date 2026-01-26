@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { useSelector } from "react-redux";
 
-const CalendarSection = ({activeDate,setActiveDate}) => {
+const CalendarSection = ({ activeDate, setActiveDate }) => {
   const today = new Date();
   const getDay = (idx) => {
     return days[idx];
@@ -19,7 +19,6 @@ const CalendarSection = ({activeDate,setActiveDate}) => {
   const [currentDate, setCurrentDate] = useState(
     new Date(today.getFullYear(), today.getMonth(), 1),
   );
-
 
   const month = currentDate.getMonth();
   const year = currentDate.getFullYear();
@@ -37,6 +36,7 @@ const CalendarSection = ({activeDate,setActiveDate}) => {
       date: today.getDate(),
       month: monthNames[today.getMonth()],
       year: today.getFullYear(),
+      monthIdx: today.getMonth(),
     });
   };
 
@@ -146,6 +146,7 @@ const CalendarSection = ({activeDate,setActiveDate}) => {
                     date: date,
                     month: monthNames[month],
                     year: year,
+                    monthIdx: month,
                   });
                 }}
               >

@@ -28,7 +28,7 @@ const Verification = ({changeAccess}) => {
       return;
     };
     if(inp === pass){
-      changeAccess(true);
+      // changeAccess(true);
       navigate('/home')
     }
   }
@@ -36,7 +36,7 @@ const Verification = ({changeAccess}) => {
   useEffect(()=>{
     document.querySelector("#passInp").addEventListener('keydown',(e)=>{
       if(e.key == 'Enter'){
-        verifyPassword();
+        // verifyPassword();
       }
     })
   })
