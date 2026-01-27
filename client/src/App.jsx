@@ -1,6 +1,6 @@
 import "./index.css";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Entry from "./pages/Entry";
 import Sidebar from "./pages/Sidebar.jsx";
 import Nav from "./components/Navbar/Nav";
@@ -15,7 +15,6 @@ import Ai from "./pages/Ai.jsx";
 import AiPage from "./pages/AiPage.jsx";
 import Security from "./pages/Security.jsx";
 import { expenses, tasks, notes, diaries } from "./services/data";
-import Error from "../../error.jsx";
 
 function App() {
   localStorage.setItem("access", false);
@@ -23,7 +22,7 @@ function App() {
   const [sidebar, setSidebar] = useState(false);
 
   function changeAccess(st) {
-    setAccess(false);
+    setAccess(st);
     localStorage.setItem("access", false);
   }
 

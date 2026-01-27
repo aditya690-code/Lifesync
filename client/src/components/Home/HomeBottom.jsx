@@ -1,18 +1,30 @@
-import { FileText, IndianRupee, Info, Notebook, Trash2 } from "lucide-react";
+import {
+  CalculatorIcon,
+  Calendar,
+  FileText,
+  IndianRupee,
+  Info,
+  Notebook,
+  Trash2,
+} from "lucide-react";
 import React, { useState, useRef } from "react";
 import "../.././index.css";
 import { useGSAP } from "@gsap/react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import gsap from "gsap";
 import { useSelector } from "react-redux";
+import { isTaskDue } from "../../services/function";
+import Time from "../Common/Time";
 
 const HomeBottom = ({ tl, expenses, tasks, notes }) => {
-  const diaries = useSelector((state) => state.diary.entry);
+  let diaries = useSelector((state) => state.diary.entry);
+  diaries = diaries.slice(0, 5);
+  notes = notes.slice(0, 5);
   // Journal State
   const [activeJournal, setActiveJournal] = useState();
-  const [moreNotes, setMoreNotes] = useState(true);
-  const [moreJournal, setMoreJournal] = useState(true);
-  const [moreExpenses, setMoreExpenses] = useState(true);
+  const [moreNotes, setMoreNotes] = useState(false);
+  const [moreJournal, setMoreJournal] = useState(false);
+  const [moreExpenses, setMoreExpenses] = useState(false);
 
   // Toggle Task Completion
   const toggleTask = () => {};
@@ -24,6 +36,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
   const rightRef = useRef();
   const journalRef = useRef();
 
+  // Animations
   useGSAP(
     () => {
       const tl = gsap.timeline();
@@ -36,7 +49,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           delay: 0.3,
           ease: "power4.out",
         },
-        "+=0.3"
+        "+=0.3",
       );
 
       tl.from(
@@ -48,7 +61,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           backgroundColor: "#e6e6e6",
           ease: "power4.out",
         },
-        "-=0.5"
+        "-=0.5",
       );
 
       tl.from(
@@ -60,7 +73,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           duration: 1,
           ease: "power4.out",
         },
-        "-=0.5"
+        "-=0.5",
       );
 
       tl.from(
@@ -71,7 +84,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           duration: 0.5,
           ease: "back.out(1.7)",
         },
-        "-=0.7"
+        "-=0.7",
       );
 
       tl.from(
@@ -82,7 +95,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           duration: 0.5,
           ease: "back.out(1.7)",
         },
-        "-=0.7"
+        "-=0.7",
       );
 
       tl.from(
@@ -95,7 +108,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           stagger: 0.15,
           ease: "back.out(1.7)",
         },
-        "-=0.6"
+        "-=0.6",
       );
 
       tl.from(
@@ -108,12 +121,11 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           stagger: 0.15,
           ease: "back.out(1.7)",
         },
-        "<"
+        "<",
       );
     },
-    { scope: upperRef, currentTimeline: tl }
+    { scope: upperRef, currentTimeline: tl },
   );
-
   useGSAP(
     () => {
       gsap.registerPlugin(ScrollTrigger);
@@ -137,7 +149,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             duration: 0.8,
             delay: 0.3,
           },
-          "-=0.2"
+          "-=0.2",
         )
 
         .from(".lower-section .header", {
@@ -158,7 +170,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             opacity: 0,
             duration: 0.4,
           },
-          "<"
+          "<",
         )
 
         .from(".lower-section .body", {
@@ -179,7 +191,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             duration: 0.5,
             opacity: 0,
           },
-          "<"
+          "<",
         )
 
         .to(
@@ -191,7 +203,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             delay: 0.1,
             scale: 0,
           },
-          "-=5"
+          "-=5",
         )
 
         .to(
@@ -203,7 +215,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             delay: 0.1,
             scale: 0,
           },
-          "<"
+          "<",
         )
 
         .to(leftRef.current.children, {
@@ -225,14 +237,13 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             stagger: 0.2,
             duration: 0.6,
           },
-          "<"
+          "<",
         );
 
       tl2.pause();
     },
-    { scope: lowerRef.current }
+    { scope: lowerRef.current },
   );
-
   useGSAP(
     () => {
       if (!journalRef.current) return;
@@ -244,7 +255,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
         stagger: 0.15,
       });
     },
-    { scope: journalRef, dependencies: [activeJournal] }
+    { scope: journalRef, dependencies: [activeJournal] },
   );
 
   return (
@@ -291,7 +302,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             {expenses.map((expense, index) => (
               <div
                 key={index}
-                className="item w-full flex items-center bg-white text-black hover:bg-[#f1f3f6] cursor-pointer"
+                className="item w-full flex items-center bg-white text-black hover:bg-[#f1f3f6] cursor-pointer group"
               >
                 {/* Icon */}
                 <div className="icon bg-[#F1F5F9] p-3 rounded-4xl ml-5">
@@ -300,12 +311,18 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
                 {/* Transaction Details*/}
                 <div className="middle flex-1 px-4 py-4">
                   <p className="font-medium">{expense.content}</p>
-                  <p className="text-xs opacity-15">
-                    {expense.title} &nbsp; {expense.date}
+                  <p className="text-xs opacity-40 flex items-center gap-2 mt-0.5">
+                    <span className="flex gap-0.5 items-center">
+                      <Time time={expense.createdAt} size={11} />
+                    </span>
+                    <span>{expense.title}</span>
                   </p>
                 </div>
                 {/* Transaction Amount */}
                 <div className="mr-5">-{expense.amount}</div>
+                <button className="text-red-500 mr-5 opacity-0 cursor-pointer active:scale-90 transition-all duration-300 group-hover:opacity-100 ">
+                  <Trash2 size={20} />
+                </button>
               </div>
             ))}
             {/* Load More Button */}
@@ -322,7 +339,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           </div>
         </div>
 
-        {/* Routine Section */}
+        {/* Tasks Section */}
         <div
           className="          
         right
@@ -332,9 +349,9 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
         border-gray-100
         rounded-xl"
         >
-          {/* Routine Header Section  */}
+          {/* Tasks Header Section  */}
           <div className="header flex justify-between items-center p-5 bg-[#e4e4e4] rounded-xl rounded-b-none">
-            <h2 className="text-center text-xl font-bold">Your Routines</h2>
+            <h2 className="text-center text-xl font-bold">Tasks</h2>
             <a
               href="/routines"
               className="text-blue-600 hover:text-blue-900 font-medium text-sm"
@@ -346,16 +363,16 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
           <div className="list bg-white h-[calc(100%-4.28rem)] rounded-xl rounded-t-none overflow-y-auto no-scrollbar">
             {/* Routine Items */}
             {tasks && tasks.length > 0 ? (
-              tasks.map((task) => (
+              tasks.map((task, i) => (
                 <div
-                  key={task.id}
-                  className="item w-full flex items-center bg-white text-black hover:bg-[#f1f3f6] cursor-pointer"
+                  key={i}
+                  className="item w-full flex items-center bg-white text-black hover:bg-[#f1f3f6] cursor-pointer group"
                 >
                   {/* Input */}
                   <div className="icon bg-[#F1F5F9] p-2.5 rounded-4xl ml-5 flex items-center justify-center">
                     <input
                       onChange={() => toggleTask(task.id)}
-                      checked={task.status === "progress"}
+                      checked={task.isDone}
                       type="checkbox"
                       className="
                       w-4 h-4
@@ -370,38 +387,26 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
                       duration-50
                       ease-out
                       checked:scale-110
-                      focus:ring-0 mr-2.5"
-                    />
-                    <input
-                      onChange={() => toggleTask(task.id)}
-                      checked={task.status === "done"}
-                      type="checkbox"
-                      className=" 
-                      w-4 h-4
-                      rounded-full
-                      cursor-pointer
-                      appearance-none
-                      border-0
-                      outline-none
-                    bg-gray-300
-                    checked:bg-green-500
-                      transition-all  
-                      duration-50
-                      ease-out
-                      checked:scale-110
                       focus:ring-0"
                     />
                   </div>
                   {/* Task Details */}
                   <div className="middle flex-1 px-4 py-4">
                     <p className="font-medium">{task.title}</p>
-                    <p className="text-xs text-gray-400">{task.description}</p>
+                    <p className="text-xs text-gray-400 flex gap-2 items-center mt-0.5">
+                      <span
+                        className={`${isTaskDue(task.createdAt) ? "text-red-400" : ""} flex  items-center gap-0.5`}
+                      >
+                        <Time size={11} time={task.createdAt} />
+                      </span>
+                      <span>{task.content}</span>
+                    </p>
                   </div>
                   {/* Delete Button */}
                   <button className="mr-5">
                     <Trash2
                       size={20}
-                      className="hover:text-red-400 cursor-pointer active:scale-95 transition-colors opacity-100"
+                      className="text-red-400 cursor-pointer active:scale-95 transition-colors opacity-0 group-hover:opacity-100"
                     />
                   </button>
                 </div>
@@ -494,7 +499,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             {diaries.map((entry, index) => (
               <div
                 key={index}
-                className="item p-3.5 w-10/11 bg-[#f0f0f0] cursor-pointer m-2 flex items-center justify-between rounded-lg transition-all duration-200"
+                className="item p-3.5 w-10/11 bg-[#f0f0f0] cursor-pointer m-2 flex items-center justify-between rounded-lg transition-all duration-200 group"
               >
                 <div
                   className="info flex-1 mr-1 active:scale-95"
@@ -503,13 +508,15 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
                   }}
                 >
                   <h2 className="font-semibold">{entry.title}</h2>
-                  <p className="opacity-20 text-xs ml-1">{entry.date}</p>
+                  <p className="opacity-40 text-xs ml-1">
+                    <Time size={11} time={entry.createdAt} />
+                  </p>
                 </div>
-                <button className="">
+                <button className="opacity-0 group-hover:opacity-100">
                   {" "}
                   <Trash2
                     size={20}
-                    className="hover:text-red-400 cursor-pointer active:scale-95 transition-colors"
+                    className="text-red-400 cursor-pointer active:scale-95 transition-colors"
                   />
                 </button>
               </div>
@@ -550,7 +557,7 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
             {notes.map((note, index) => (
               <div
                 key={index}
-                className="item p-3.5 w-10/11 bg-[#f0f0f0] cursor-pointer m-2 flex items-center justify-between rounded-lg transition-all duration-200"
+                className="item p-3.5 w-10/11 bg-[#f0f0f0] cursor-pointer m-2 flex items-center justify-between rounded-lg transition-all duration-200 group"
               >
                 <div
                   className="info flex-1 mr-1 active:scale-95"
@@ -559,13 +566,15 @@ const HomeBottom = ({ tl, expenses, tasks, notes }) => {
                   }}
                 >
                   <h2 className="font-semibold">{note.title}</h2>
-                  <p className="opacity-20 text-xs ml-1">{note.date}</p>
+                  <p className="opacity-40 text-xs ml-1">
+                    <Time size={11} time={note.createdAt} />
+                  </p>
                 </div>
-                <button className="">
+                <button className="opacity-0 group-hover:opacity-100">
                   {" "}
                   <Trash2
                     size={20}
-                    className="hover:text-red-400 cursor-pointer active:scale-95 transition-colors"
+                    className="text-red-400 cursor-pointer active:scale-95 transition-colors"
                   />
                 </button>
               </div>

@@ -32,6 +32,7 @@ const ExpenseUpper = ({ tl, total }) => {
 
   const expenses = useSelector((state) => state.expenses.expenses);
 
+  // Animation
   useGSAP(() => {
     tl.from(".history", {
       x: 400,
@@ -59,7 +60,7 @@ const ExpenseUpper = ({ tl, total }) => {
           duration: 0.6,
           scale: 0,
         },
-        "<"
+        "<",
       )
 
       .from(".left h2,.left h2 Wallet,.left h2 span,.left p span", {
@@ -79,7 +80,7 @@ const ExpenseUpper = ({ tl, total }) => {
           duration: 0.7,
           stagger: 0.17,
         },
-        "<"
+        "<",
       );
   });
   const handleAnalyze = async () => {
@@ -95,7 +96,7 @@ const ExpenseUpper = ({ tl, total }) => {
       // Calculate Total
       const totalAmount = expenses.reduce(
         (sum, item) => sum + (Number(item.amount) || 0),
-        0
+        0,
       );
 
       // Group totals by Category
@@ -140,11 +141,11 @@ const ExpenseUpper = ({ tl, total }) => {
       const response = await callGemini(systemPrompt);
 
       // --- STEP 5: ROBUST PARSING ---
-
-      let replyText = response.data?.reply || response.data || "";
+      let replyText = response.data?.advice || ""; //response.data ||
 
       // aggressive cleanup: removes markdown code blocks and surrounding whitespace
-      const cleanJson = replyText.replace(/```json|```/g, "").trim();
+      // const cleanJson = replyText.replace(/```json|```/g, "").trim();
+      const cleanJson = replyText;
 
       let advice = "Check your top expense categories to find savings."; // Default fallback
 
@@ -160,6 +161,7 @@ const ExpenseUpper = ({ tl, total }) => {
           console.warn("AI Response malformed:", replyText);
         }
       }
+      advice = cleanJson;
 
       setAiTip(advice);
     } catch (err) {
@@ -265,7 +267,7 @@ const ExpenseUpper = ({ tl, total }) => {
               </select>
             </span>
             {/* Button */}
-            <button className="w-28 h-full cursor-pointer bg-white rounded-lg rounded-l-none active:opacity-60">
+            <button className="w-28 h-full cursor-pointer bg-white rounded-lg rounded-l-none active:font-normal font-medium">
               {" "}
               Add
             </button>

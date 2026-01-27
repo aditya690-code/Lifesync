@@ -1,6 +1,5 @@
 import callGemini from "../api/Gemini";
 
-
 export function handleLayout(lay, setActiveLayout) {
   localStorage.setItem("layout", lay);
   setActiveLayout(lay);
@@ -105,3 +104,9 @@ export async function handleAiForm(
     scrollToBottom();
   }
 }
+
+export const isTaskDue = (date) => {
+  const today = new Date();
+  const temp = new Date(date.year, date.month, date.date);
+  return today > temp;
+};

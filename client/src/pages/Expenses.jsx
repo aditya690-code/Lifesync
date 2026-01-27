@@ -10,7 +10,13 @@ import ExpenHis from "../components/Expenses/ExpenHis";
 const Expenses = () => {
   const [page, setPage] = useState("current");
   const tl = gsap.timeline();
-  const expenses = useSelector((state) => state.expenses.expenses);
+  const today = new Date();
+  let expenses = useSelector((state) => state.expenses.expenses);
+  expenses = expenses.filter(
+    (item) =>
+      item.createdAt.month === today.getMonth() &&
+      item.createdAt.year === today.getFullYear(),
+  );
   const total = expenses.reduce((sum, item) => sum + item.amount, 0);
   const handlePage = (str) => {
     setPage(str);
