@@ -88,7 +88,7 @@ const TasksPage = () => {
   // });
 
   return (
-    <div className="px-4 h-[8%] w-full taskBody">
+    <div className="px-4 h-[86%] w-full taskBody">
       <div className="h-full w-full rounded-2xl flex flex-col justify-between items-center">
         {/* Header */}
         <div className="taskHead w-full h-20 bg-[#e4e4e4] rounded-t-2xl flex justify-between items-center px-6">

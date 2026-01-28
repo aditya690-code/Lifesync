@@ -37,7 +37,7 @@ const ToDo = () => {
   }, [progress]);
   return (
     <div className="bg-r h-[calc(100vh-4rem)] w-full px-4 flex flex-col justify-between gap-5 py-7">
-      <div className="w-full h-12 px-4">
+      <div className="w-full h-3 px-4">
         <div className="w-full h-full rounded-2xl overflow-hidden">
           <div className={`progress-bar h-full bg-indigo-500`}></div>
         </div>
