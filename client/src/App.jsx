@@ -15,6 +15,7 @@ import Ai from "./pages/Ai.jsx";
 import AiPage from "./pages/AiPage.jsx";
 import Security from "./pages/Security.jsx";
 import { expenses, tasks, notes, diaries } from "./services/data";
+import gsap from "gsap";
 
 function App() {
   localStorage.setItem("access", false);
@@ -29,6 +30,12 @@ function App() {
   function handleSidebar() {
     setSidebar(!sidebar);
   }
+
+  gsap.config({
+    nullTargetWarn: false,
+    trialWarn: false,
+    force3D: true,
+  });
 
   return (
     <div className="no-scrollbar">

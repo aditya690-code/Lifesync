@@ -1,23 +1,40 @@
 import { Calendar, Trash2 } from "lucide-react";
-import React from "react";
+import { printSubString } from "../../services/function";
 
-const NoteListitem = ({ data }) => {
-  const date = data.createdAt;
-
+const NoteListitem = ({ data, setAnyNote, setActiveNote }) => {
   return (
-    <div className="bg-gray-200 cursor-pointer h-fit py-4 my-2 w-full px-12 flex justify-between group">
-      <div className="flex flex-col items-start justify-center gap-1">
-        <h2 className="text-md">{data.title}</h2>
-        <div className="flex gap-2 items-center text-xs text-gray-500">
-          <p className="flex text-xs items-center justify-center gap-0.5">
-            <Calendar size={10} />
-            {date.date}/ {date.month}/ {date.year}
-          </p>
-          <p className="text-xs">{data.content}</p>
-        </div>
+    <div
+      className="flex items-center m-2
+      hover:bg-gray-100 bg-white 
+      group px-2 py-2 
+      hover:rounded-lg 
+      cursor-pointer 
+      hover:-translate-y-1 
+      transition-all duration-300
+      active:scale-95
+    "
+    >
+      <div
+        className="flex-1 flex flex-col justify-center h-16"
+        onClick={() => {
+          setAnyNote(true);
+          setActiveNote(data);
+        }}
+      >
+        <h2 className="font-medium py-0.5">{printSubString(data.title, 20)}</h2>
+
+        <p className="text-xs pl-1 text-gray-500">
+          {printSubString(data.content, 25)}
+        </p>
       </div>
-      <button className="bg--300 pr-4 cursor-pointer opacity-0 transition-all duration-300 ease-in-out hover:opacity-100 active:scale-90 group-hover:opacity-80">
-        <Trash2 size={20} className="text-red-500" />
+      <button
+        className="
+            p-1.5 h-fit w-fit 
+            text-red-400 cursor-pointer 
+            active:scale-90 transition-all duration-300 
+            opacity-0 group-hover:opacity-100"
+      >
+        <Trash2 size={20} />
       </button>
     </div>
   );

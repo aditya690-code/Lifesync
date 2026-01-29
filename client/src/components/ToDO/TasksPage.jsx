@@ -1,17 +1,18 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
+// import { useEffect } from "react";
 import Header from "./Header";
 import gsap from "gsap";
-import { LayoutGrid, List, ListTodo } from "lucide-react";
+import { LayoutGrid, List, ListTodo, Trash, Trash2 } from "lucide-react";
 import { useSelector } from "react-redux";
 import TaskList from "./TaskList";
 import TaskGrid from "./TaskGrid";
-import { useGSAP } from "@gsap/react";
+// import { useGSAP } from "@gsap/react";
 
 const TasksPage = () => {
   const layout = localStorage.getItem("layout") || "list";
   const [view, setView] = useState(layout);
   const [taskStatus, setTaskStatus] = useState("pending");
-  const containerRef = useRef(null);
+  // const containerRef = useRef(null);
   const headRightRef = useRef(null);
   const tasks = useSelector((state) => state.todo.todo);
   const temp = tasks.filter((task) => task.isDone != true);
@@ -99,6 +100,21 @@ const TasksPage = () => {
             ref={headRightRef}
             className="bg-100 flex gap-5 justify-between items-center py-1"
           >
+            {taskStatus === "history" ? (
+              <button 
+                className="
+                  text-red-500 hover:text-red-600 p-1 
+                  transition-all 
+                  duration-300 active:scale-90 
+                  ease-in-out cursor-pointer 
+                  rounded-full
+                "
+              >
+                <Trash2 size={20} />
+              </button>
+            ) : (
+              ""
+            )}
             <p className="p-2 bg-gray-300 rounded-full py-1 px-2 font-medium text-lg text-black">
               {data.length}
             </p>

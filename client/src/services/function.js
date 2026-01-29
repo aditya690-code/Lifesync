@@ -110,3 +110,8 @@ export const isTaskDue = (date) => {
   const temp = new Date(date.year, date.month, date.date);
   return today > temp;
 };
+
+export const printSubString = (str, length) => {
+  const extraStr = str.length > length ? "..." : "";
+  return str.slice(0, length) + extraStr;
+};

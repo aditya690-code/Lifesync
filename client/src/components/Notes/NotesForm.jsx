@@ -71,7 +71,7 @@ const NotesForm = ({ form, setForm, addNote }) => {
               "
       />
       {/* Error */}
-        {error && <p className="text-sm text-red-500 w-full pl-12">{error}</p>}
+      {error && <p className="text-sm text-red-500 w-full pl-12">{error}</p>}
     </div>
   );
 };

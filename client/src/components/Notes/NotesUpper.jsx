@@ -1,15 +1,25 @@
-import {
-  Plus,
-  X,
-} from "lucide-react";
-import React, { useState } from "react";
+import { Plus, X } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { handleLayout } from "../../services/function";
 import SearchBar from "../shared/SearchBar";
 import Layout from "../shared/Layout";
 
-const NotesUpper = ({ setForm,layout,setLayout }) => {
+const NotesUpper = ({
+  setForm,
+  layout,
+  setLayout,
+  setActiveNote,
+  setAnyNote,
+}) => {
   const [icon, setIcon] = useState(true);
   const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    setAnyNote(false);
+    setActiveNote({});
+    setForm(false);
+    setIcon(true);
+  }, [layout]);
 
   return (
     <div className="w-full flex justify-end h-13">
@@ -27,25 +37,30 @@ const NotesUpper = ({ setForm,layout,setLayout }) => {
         </div>
 
         {/* Note button */}
-        <button
-          className="bg-indigo-600 text-white cursor-pointer border border-indigo-600
-                      active:opacity-95 active:scale-95 flex px-4 py-1 
+        {
+          <button
+            className="bg-indigo-600 text-white cursor-pointer border border-indigo-600
+                      active:opacity-95 active:scale-95 flex px-2 py-1 
                       items-center justify-between gap-1 transition-all duration-300 rounded h-full"
-          onClick={() => {
-            setIcon((prev) => !prev);
-            setForm((prev) => !prev);
-          }}
-        >
-          {icon ? (
-            // Plus icon
-            <Plus size={20} />
-          ) : (
-            // Cut icon
-            <X size={20} />
-          )}
-          {/* Text */}
-          New Note
-        </button>
+            onClick={() => {
+              setIcon((prev) => !prev);
+              layout === "grid"
+                ? setForm((prev) => !prev)
+                : setActiveNote(
+                    { title: "", content: "" },
+                    setAnyNote((prev) => !prev),
+                  );
+            }}
+          >
+            {icon ? (
+              // Plus icon
+              <Plus size={20} />
+            ) : (
+              // Cut icon
+              <X size={20} />
+            )}
+          </button>
+        }
       </div>
     </div>
   );

@@ -219,7 +219,7 @@ const LeftDiary = () => {
             </button>
           </div>
         )}
-      </div> ƒ√
+      </div>
     </div>
   );
 };
