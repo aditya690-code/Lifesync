@@ -6,11 +6,15 @@ import NotesUpper from "../components/Notes/NotesUpper";
 import LeftDiary from "../components/Diary/LeftDiary";
 import RightDiary from "../components/Diary/RightDiary";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setActiveDiary,
+  setIsDiaryActive,
+} from "../redux/features/diary/diarySlice";
 
 const Diary = () => {
   const { isLoading, error } = useSelector((state) => state.diary);
-
+  const dispatch = useDispatch();
   const ref = useRef();
 
   useGSAP(
@@ -36,16 +40,25 @@ const Diary = () => {
     return <h1> Error </h1>;
   }
 
+  const setIsDiaryActiveFun = (val) => {
+    dispatch(setIsDiaryActive(val));
+  };
+
+  const setActiveDiaryFun = (diary) => {
+    dispatch(setActiveDiary(diary));
+    setIsDiaryActiveFun(true);
+  };
+
   return (
     <div
       ref={ref}
       className="diary h-[calc(100vh-4rem)] w-full overflow-hidden"
     >
       <NotesUpper
-        setForm={(str) => {}}
+        setForm={}
         layout={"list"}
         setLayout={(str) => {}}
-        setActiveNote={(str) => {}}
+        setActiveNote={setActiveDiaryFun}
         setAnyNote={() => {}}
       />
       {/* MAIN LAYOUT */}

@@ -3,7 +3,7 @@ import { diaries } from "../../../services/data";
 
 const initialState = {
   entry: diaries,
-  totalEntry:0,
+  totalEntry: 0,
   skip: {
     isSkip: true,
     value: 0,
@@ -12,6 +12,7 @@ const initialState = {
   hashMore: false,
 
   activeDiary: {},
+  isDiaryActive: false,
   searchDiary: null,
 
   isLoading: false,
@@ -25,7 +26,7 @@ export const diarySlice = createSlice({
     setEntry: (state, action) => {
       state.entry = action.payload;
     },
-    setTotalEntry:(state,action)=>{
+    setTotalEntry: (state, action) => {
       state.totalEntry = action.payload;
     },
     addJournal: (state, action) => {
@@ -55,6 +56,9 @@ export const diarySlice = createSlice({
     setHashMore: (state, action) => {
       state.hashMore = action.payload;
     },
+    setIsDiaryActive: (state, action) => {
+      state.isDiaryActive = action.payload;
+    },
   },
 });
 
@@ -69,5 +73,6 @@ export const {
   setError,
   setSkip,
   setHashMore,
+  setIsDiaryActive,
 } = diarySlice.actions;
 export default diarySlice.reducer;

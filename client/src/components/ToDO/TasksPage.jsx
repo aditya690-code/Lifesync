@@ -18,7 +18,7 @@ gsap.registerPlugin(useGSAP);
 const TasksPage = () => {
   /* 🔹 State */
   const [view, setView] = useState(
-    () => localStorage.getItem("layout") || "list"
+    () => localStorage.getItem("layout") || "list",
   );
   const [taskStatus, setTaskStatus] = useState("pending");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +28,7 @@ const TasksPage = () => {
 
   /* 🔹 Derived data */
   const data = tasks.filter((task) =>
-    taskStatus === "pending" ? !task.isDone : task.isDone
+    taskStatus === "pending" ? !task.isDone : task.isDone,
   );
 
   /* 🔹 Refs */
@@ -50,7 +50,7 @@ const TasksPage = () => {
         .fromTo(
           taskCon.current,
           { y: 400, autoAlpha: 0 },
-          { y: 0, autoAlpha: 1, duration: 0.5 }
+          { y: 0, autoAlpha: 1, duration: 0.5 },
         )
         .from(taskConNav.current, {
           y: 300,
@@ -69,7 +69,7 @@ const TasksPage = () => {
           stagger: 0.14,
         });
     },
-    { scope: containerRef, dependencies: [] }
+    { scope: containerRef, dependencies: [] },
   );
 
   /* 🔹 Handlers */
@@ -79,14 +79,8 @@ const TasksPage = () => {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="px-4 h-[86%] w-full taskBody"
-    >
-      <div
-        ref={taskCon}
-        className="h-full w-full rounded-2xl flex flex-col"
-      >
+    <div ref={containerRef} className="px-4 h-[86%] w-full taskBody">
+      <div ref={taskCon} className="h-full w-full rounded-2xl flex flex-col">
         {/* Header */}
         <div
           ref={taskConNav}
@@ -96,10 +90,7 @@ const TasksPage = () => {
             {taskStatus === "pending" ? "To Do List" : "Completed History"}
           </h2>
 
-          <div
-            ref={headRightRef}
-            className="flex gap-5 items-center"
-          >
+          <div ref={headRightRef} className="flex gap-5 items-center">
             {taskStatus === "history" && (
               <button
                 className="text-red-500 hover:text-red-600 active:scale-90 transition"
@@ -128,7 +119,7 @@ const TasksPage = () => {
             <div className="flex gap-2 bg-gray-300 p-1 rounded-md">
               <button
                 onClick={() => setTaskStatus("pending")}
-                className={`px-4 py-1 rounded-md ${
+                className={`px-4 py-1 rounded-md cursor-pointer ${
                   taskStatus === "pending"
                     ? "bg-indigo-500 text-white"
                     : "text-gray-400"
@@ -138,7 +129,7 @@ const TasksPage = () => {
               </button>
               <button
                 onClick={() => setTaskStatus("history")}
-                className={`px-4 py-1 rounded-md ${
+                className={`px-4 py-1 rounded-md cursor-pointer ${
                   taskStatus === "history"
                     ? "bg-green-500 text-white"
                     : "text-gray-400"
