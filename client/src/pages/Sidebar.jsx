@@ -9,10 +9,10 @@ import {
   Instagram,
   Linkedin,
   ListTodo,
-  Moon,
   ShieldX,
   StickyNote,
   Sun,
+  Moon,
   UserLock,
   Wallet,
 } from "lucide-react";
@@ -34,9 +34,9 @@ const Sidebar = ({ handleSidebar }) => {
     <div className="sidebar fixed top-0 left-0 w-screen h-screen overflow-hidden bg-[#9d9c9c72] z-50">
       <div
         className="h-full w-full bg-[#9d9c9c72] z-45 absolute top-0 left-0 cursor-pointer"
-        onClick={()=>handleSidebar()}
+        onClick={() => handleSidebar()}
       ></div>
-      
+
       <div className="sidebar fixed top-0 left-0  w-1/5 z-50 h-screen overflow-hidden flex flex-col">
         <div className="bb absolute bg-[#ececec] h-full w-full scale-1 -mt-[220%] -ml-[100%] mr-[100%] rounded-full z-1"></div>
         <div className="head w-full p-4 px-6 border-b z-10">
@@ -91,7 +91,8 @@ const Sidebar = ({ handleSidebar }) => {
             <Moon size={40} className="p-2.5 rounded-full bg-gray-600 text-white cursor-pointer"/>
             <Sun  size={40} className="p-2.5 rounded-full bg-gray-600 text-white cursor-pointer"/>
           </div> */}
-          <Link to={'/'}
+          <Link
+            to={"/"}
             className=" pl-12 text-md font-medium text-red-400 active:scale-90 flex gap-1 items-center cursor-pointer bg-none transition-all duration-300"
           >
             <ShieldX size={20} />

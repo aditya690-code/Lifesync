@@ -1,5 +1,6 @@
 import { Calendar, Trash2 } from "lucide-react";
 import { printSubString } from "../../services/function";
+import Time from "../Common/Time";
 
 const NoteListitem = ({ data, setAnyNote, setActiveNote, ref }) => {
   return (
@@ -25,8 +26,11 @@ const NoteListitem = ({ data, setAnyNote, setActiveNote, ref }) => {
       >
         <h3 className="font-medium py-0.5">{printSubString(data.title, 20)}</h3>
 
-        <p className="text-xs pl-1 text-gray-500">
-          {printSubString(data.content, 25)}
+        <p className="text-xs pl-1 text-gray-500 flex gap-1">
+          <span className="text-gray-400">
+            <Time size={11} time={data.createdAt} />
+          </span>
+          {printSubString(data.content, 12)} {/* 25 */}
         </p>
       </div>
       <button
