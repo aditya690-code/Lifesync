@@ -1,10 +1,17 @@
 {
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "crypto-js": "^4.2.0",
     "dotenv": "^17.2.3",
     "ejs-mate": "^4.0.0",
     "express": "^5.2.1",
+    "joi": "^18.0.2",
     "mongoose": "^9.0.2",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "passport": "^0.7.0",
+    "router": "^2.2.0",
+    "routes": "^2.1.0"
   }
 }
