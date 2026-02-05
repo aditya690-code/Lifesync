@@ -4,9 +4,11 @@ import HomeMiddle from "../components/Home/HomeMiddle";
 import HomeBottom from "../components/Home/HomeBottom";
 import { useSelector } from "react-redux";
 import gsap from "gsap";
+import {createNote} from '../api/Auth.js';
 
 const Home = () => {
   const tl = gsap.timeline();
+  createNote({ title: "Sample Note", content: "This is a sample note." });
 
   const diary = useSelector((state) => state.diary.entry);
   const notes = useSelector((state) => state.notes.notes);
