@@ -3,7 +3,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const fetch = require("node-fetch");
 const cookieParser = require("cookie-parser");
-const connectDB = require("./config/db");
 
 // Load environment variables
 dotenv.config();
@@ -13,15 +12,15 @@ const app = express();
 
 // Middleware
 app.use(
-    cors({
-        origin: "http://localhost:8080",
-        credentials: true,
-    }),
+  cors({
+    origin: "http://localhost:8080",
+    credentials: true,
+  }),
 );
 app.use(express.json());
 app.use(cookieParser());
 
-// Connect to db
-connectDB();
+app.use("/expenses", require("./routes/expenses.routes"));
+app.use("/auth", require("./routes/auth.routes.js"));
 
 module.exports = app;
