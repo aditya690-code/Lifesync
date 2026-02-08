@@ -1,0 +1,29 @@
+const mongoose = require("mongoose");
+
+const userSchema = new mongoose.Schema(
+  {
+    // Basic user information
+    name: { type: String, required: true },
+    username: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true },
+    isEmailVerified: { type: Boolean, default: false },
+    emailVerificationToken: { type: String },
+    emailVerificationTokenExpires: { type: Date },
+
+    // Admin approval fields
+    isApproved: { type: Boolean, default: false },
+    appPassword: { type: String },
+    salt: { type: String, required: true },
+    passwordHash: { type: String, required: true },
+    createdAt: { type: Date, required: true },
+
+    // References to other models
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+    notes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
+    diaries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Diary" }],
+    expenses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Expense" }],
+  },
+  { timestamps: true },
+);
+
+module.exports = mongoose.model("User", userSchema);
