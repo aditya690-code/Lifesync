@@ -1,9 +1,9 @@
 import "./index.css";
-import { Routes, Route, Navigate } from "react-router-dom";
 import { useState } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import Nav from "./components/Navbar/Nav";
 import Entry from "./pages/Entry";
 import Sidebar from "./pages/Sidebar.jsx";
-import Nav from "./components/Navbar/Nav";
 import Home from "./pages/Home";
 import Verification from "./pages/Verification.jsx";
 import Diary from "./pages/Diary";
@@ -14,8 +14,8 @@ import Calendar from "./pages/Calendar.jsx";
 import Ai from "./pages/Ai.jsx";
 import AiPage from "./pages/AiPage.jsx";
 import Security from "./pages/Security.jsx";
-import { expenses, tasks, notes, diaries } from "./services/data";
 import gsap from "gsap";
+import { expenses, tasks, notes, diaries } from "./services/data";
 
 function App() {
   localStorage.setItem("access", false);

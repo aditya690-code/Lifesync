@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema(
     emailVerificationTokenExpires: { type: Date },
 
     // Admin approval fields
-    isApproved: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: true },
     appPassword: { type: String },
     salt: { type: String, required: true },
     password: { type: String, required: true },
