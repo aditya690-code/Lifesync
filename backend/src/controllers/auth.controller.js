@@ -33,6 +33,7 @@ const newUserFunction = async (req, res) => {
     await newUser.save();
     res
       .status(201)
+
       .json({ success: true, response: "User registered successfully" });
   } catch (error) {
     res.status(500).json({ success: false, response: "Internal server error" });
