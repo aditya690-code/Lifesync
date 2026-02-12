@@ -1,14 +1,29 @@
 const express = require("express");
-const User = require("../models/user.model");
-const crypto = require("crypto");
 const router = express.Router();
-const { newUser, login } = require("../controllers/auth.controller");
+const authControllers = require("../controllers/auth.controller");
 const wrapAsync = require("../utils/wrapAsync");
+const authMiddleware = require("../middleware/authValidation.js");
 
 // Login user
-router.post("/login", wrapAsync(login));
+router.post(
+  "/login",
+  authMiddleware.loginValidationRules,
+  wrapAsync(authControllers.login),
+);
 
 // Register a new user
-router.post("/register", wrapAsync(newUser));
+router.post(
+  "/register",
+  authMiddleware.registerValidationRules,
+  wrapAsync(authControllers.newUser),
+);
+
+router.post("/logout", wrapAsync(authControllers.logout));
+
+router.get("/verify-email", wrapAsync(authControllers.verifyEmail));
+router.post(
+  "/send-email-verification-email",
+  wrapAsync(authControllers.reSendEmailVerification),
+);
 
 module.exports = router;

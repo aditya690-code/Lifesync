@@ -13,15 +13,14 @@ const userSchema = new mongoose.Schema(
     // Admin approval fields
     isApproved: { type: Boolean, default: true },
     appPassword: { type: String },
-    salt: { type: String, required: true },
     password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
 
-    // References to other models
-    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
-    notes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
-    diaries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Diary" }],
-    expenses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Expense" }],
+    // // References to other models
+    // tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Task" }],
+    // notes: [{ type: mongoose.Schema.Types.ObjectId, ref: "Note" }],
+    // diaries: [{ type: mongoose.Schema.Types.ObjectId, ref: "Diary" }],
+    // expenses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Expense" }],
   },
   { timestamps: true },
 );

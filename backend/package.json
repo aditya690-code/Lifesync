@@ -25,6 +25,7 @@
     "mongoose": "^9.1.6",
     "multer": "^2.0.2",
     "node-fetch": "^3.3.2",
+    "nodemailer": "^8.0.1",
     "supertest": "^7.2.2"
   }
 }
