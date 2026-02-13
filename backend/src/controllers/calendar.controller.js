@@ -1,5 +1,5 @@
 const Note = require("../models/Note.model");
-const Journal = require("../models/diary.model");
+const Journal = require("../models/journal.model");
 const Task = require("../models/task.model");
 const Expense = require("../models/expenses.model");
 

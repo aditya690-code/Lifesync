@@ -25,6 +25,9 @@ router.post(
 // Logout route
 router.post("/logout", isUserLogin, wrapAsync(authControllers.logout));
 
+// Is User logged in or not
+router.get("/me", isUserLogin, authControllers.isUserLoggedIn);
+
 // router.post("/forgot-password", );
 
 // router.post("/change-password", isUserLogin);

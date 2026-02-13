@@ -27,13 +27,14 @@ app.use("/tasks", require("./routes/tasks.routes.js"));
 app.use("/expenses", require("./routes/expenses.routes"));
 app.use("/chatbot", require("./routes/chatbot.routes.js"));
 app.use("/calendar", require("./routes/calendar.routes.js"));
+app.use("/home", require("./routes/home.routes.js"));
+app.use("/journal", require("./routes/journal.routes.js"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ success: false, message: "Server error." });
 });
-
 
 module.exports = app;
 

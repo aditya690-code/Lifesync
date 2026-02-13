@@ -158,7 +158,7 @@ const verifyEmailFunction = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 };
-
+// Sending email verification token
 const reSendEmailVerificationFunction = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -191,6 +191,7 @@ const reSendEmailVerificationFunction = async (req, res) => {
   }
 };
 
+// Check username exist or not
 const checkUsername = async (req, res) => {
   const { username } = req.body;
   const isUser = await User.findOne({ username });
@@ -217,6 +218,26 @@ const checkUsername = async (req, res) => {
     message: "Username Available",
   });
 };
+//
+const isUserLoggedIn = async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.user.id });
+
+    res.status(200).json({
+      success: true,
+      message: "User logged in",
+      user: {
+        name: user.name,
+        username: user.username,
+        email: user.email,
+        isEmailVerified: user.isEmailVerified,
+      },
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
 // Exports all function
 module.exports = {
@@ -226,6 +247,7 @@ module.exports = {
   verifyEmail: verifyEmailFunction,
   reSendEmailVerification: reSendEmailVerificationFunction,
   checkUsername,
+  isUserLoggedIn,
 };
 
 // Helper function to send email verification

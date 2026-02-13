@@ -14,7 +14,7 @@ const journalSchema = new mongoose.Schema(
       ref: "user",
       required: true,
     },
-    createdAt: { type: Date, required: true },
+    createdAt: { type: Date, default: Date.now, required: true },
   },
   { timestamps: true },
 );
