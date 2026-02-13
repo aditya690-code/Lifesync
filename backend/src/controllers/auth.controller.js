@@ -1,5 +1,6 @@
 const bcryptjs = require("bcryptjs");
 const User = require("../models/user.model");
+const UsernameReservation = require("../models/usernameReservation.model");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
@@ -18,6 +19,7 @@ const newUserFunction = async (req, res) => {
         message: "Username already exist",
       });
     }
+
     // Check email available or not
     const isEmailAvailable = await User.findOne({ email });
     if (isEmailAvailable) {
@@ -45,6 +47,11 @@ const newUserFunction = async (req, res) => {
 
     // Sending email verification
     await sendEmail(email, emailVerificationToken);
+    const isUsernameReserve = UsernameReservation.findOne({ username });
+
+    if (isUsernameReserve) {
+      UsernameReservation.findByIdAndDelete({ _id: isUsernameReserve._id });
+    }
 
     // Responding with success message
     res.status(201).json({
@@ -88,7 +95,12 @@ const loginUserFunction = async (req, res) => {
       expiresIn: "7d",
     });
     // Setting the token in a cookie and responding with user details
-    res.cookie("token", token);
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
+
     res.status(200).json({
       success: true,
       message: "User logged in successfully",
@@ -179,12 +191,41 @@ const reSendEmailVerificationFunction = async (req, res) => {
   }
 };
 
+const checkUsername = async (req, res) => {
+  const { username } = req.body;
+  const isUser = await User.findOne({ username });
+
+  if (isUser) {
+    return res.status(409).json({
+      success: false,
+      message: "Username already taken",
+    });
+  }
+
+  const isUserReserve = await UsernameReservation.findOne({ username });
+  if (isUserReserve) {
+    return res.status(409).json({
+      success: false,
+      message: "Username already taken",
+    });
+  }
+
+  await UsernameReservation.create({ username });
+
+  res.status(201).json({
+    success: true,
+    message: "Username Available",
+  });
+};
+
+// Exports all function
 module.exports = {
   newUser: newUserFunction,
   login: loginUserFunction,
   logout: logoutFunction,
   verifyEmail: verifyEmailFunction,
   reSendEmailVerification: reSendEmailVerificationFunction,
+  checkUsername,
 };
 
 // Helper function to send email verification

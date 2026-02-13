@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const diarySchema = new mongoose.Schema(
+const journalSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,4 +19,4 @@ const diarySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Diary", diarySchema);
+module.exports = mongoose.model("Journal", journalSchema);

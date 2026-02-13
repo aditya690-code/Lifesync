@@ -1,4 +1,3 @@
-
 const Expenses = require("../models/expenses.model.js");
 const User = require("../models/user.model.js");
 const jwt = require("jsonwebtoken");
@@ -9,8 +8,6 @@ const createExpenses = async (req, res) => {
     title,
     content,
     amount,
-    date,
-    userId: "698888d97e250684d5470cab",
   });
 
   const cookieToken = req.cookies.token;
@@ -28,7 +25,7 @@ const createExpenses = async (req, res) => {
   } catch (err) {
     return res.status(401).json({ success: false, message: "Unauthorized" });
   }
-  
+
   const user = await User.findById(userId);
 
   user.expenses.push(newExpense._id);
@@ -38,11 +35,6 @@ const createExpenses = async (req, res) => {
 
   res.status(201).json({ success: true, message: "created" });
 };
-
-
-
-
-
 
 module.exports = {
   createExpense: createExpenses,

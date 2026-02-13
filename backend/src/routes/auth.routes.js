@@ -5,6 +5,9 @@ const wrapAsync = require("../utils/wrapAsync");
 const authMiddleware = require("../middleware/authValidation.middleware.js");
 const { isUserLogin } = require("../middleware/auth.middleware");
 
+// Check username available or not
+router.post("/username-available", authControllers.checkUsername);
+
 // Login user
 router.post(
   "/login",
