@@ -84,7 +84,9 @@ const loginUserFunction = async (req, res) => {
       });
     }
     // Generating a JWT token for the authenticated user
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
     // Setting the token in a cookie and responding with user details
     res.cookie("token", token);
     res.status(200).json({
@@ -109,7 +111,7 @@ const loginUserFunction = async (req, res) => {
 // Logout user function
 const logoutFunction = async (req, res) => {
   try {
-    req.clearCookie("token");
+    res.clearCookie("token");
     res
       .status(200)
       .json({ success: true, message: "User logged out successfully" });
@@ -122,7 +124,7 @@ const logoutFunction = async (req, res) => {
 // Email verification function
 const verifyEmailFunction = async (req, res) => {
   try {
-    const { token } = req.query;
+    const { token } = req.params;
     const user = await User.findOne({
       emailVerificationToken: token,
       emailVerificationTokenExpires: { $gt: Date.now() },
@@ -147,8 +149,9 @@ const verifyEmailFunction = async (req, res) => {
 
 const reSendEmailVerificationFunction = async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
+    const userId = req.user.id;
+    const user = await User.findOne({ _id: userId });
+    const email = user.email;
     if (!user) {
       return res
         .status(400)

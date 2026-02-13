@@ -22,29 +22,27 @@ app.use(express.json());
 const upload = multer({ dest: "uploads/" }); //({ storage: multer.memoryStorage() });
 app.use(cookieParser());
 
-app.use("/expenses", require("./routes/expenses.routes"));
 app.use("/auth", require("./routes/auth.routes.js"));
+app.use("/tasks", require("./routes/tasks.routes.js"));
+app.use("/expenses", require("./routes/expenses.routes"));
 app.use("/chatbot", require("./routes/chatbot.routes.js"));
 
 module.exports = app;
 
-
-
 app.post("/upload", upload.single("file"), (req, res) => {
-    const data = req.body;
-    const file = req.file;
+  const data = req.body;
+  const file = req.file;
 
-    if (!file) {
-        return res.status(400).json({ error: "No file uploaded" });
-    }
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
 
-    // Process the file and data as needed
-    console.log("Received file:", file);
-    console.log("Received data:", data);
+  // Process the file and data as needed
+  console.log("Received file:", file);
+  console.log("Received data:", data);
 
-    res.json({ success: true, message: "File uploaded successfully" });
+  res.json({ success: true, message: "File uploaded successfully" });
 });
-
 
 app.get("/file", async (req, res) => {
   try {
@@ -54,16 +52,9 @@ app.get("/file", async (req, res) => {
     }
 
     const filePath = path.join(__dirname, "..", "uploads", filename);
-    res.sendFile(filePath)
-
-
-
-
+    res.sendFile(filePath);
   } catch (error) {
     console.error("Error serving file:", error);
     res.status(500).json({ error: "Failed to serve file" });
   }
 });
-
-
-

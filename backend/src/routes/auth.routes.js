@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth.controller");
 const wrapAsync = require("../utils/wrapAsync");
-const authMiddleware = require("../middleware/authValidation.js");
+const authMiddleware = require("../middleware/authValidation.middleware.js");
+const { isUserLogin } = require("../middleware/auth.middleware");
 
 // Login user
 router.post(
@@ -18,12 +19,21 @@ router.post(
   wrapAsync(authControllers.newUser),
 );
 
-router.post("/logout", wrapAsync(authControllers.logout));
+// Logout route
+router.post("/logout", isUserLogin, wrapAsync(authControllers.logout));
 
-router.get("/verify-email", wrapAsync(authControllers.verifyEmail));
+// router.post("/forgot-password", );
+
+// router.post("/change-password", isUserLogin);
+
+// Send Emial verification token
 router.post(
-  "/send-email-verification-email",
+  "/send-email-verification-token",
+  isUserLogin,
   wrapAsync(authControllers.reSendEmailVerification),
 );
+
+// Verify email token
+router.get("/verify-email/:token", wrapAsync(authControllers.verifyEmail));
 
 module.exports = router;
