@@ -40,6 +40,6 @@ router.post(
 );
 
 // Verify email token
-router.get("/verify-email/:token", wrapAsync(authControllers.verifyEmail));
+router.post("/verify-email", wrapAsync(authControllers.verifyEmail));
 
 module.exports = router;

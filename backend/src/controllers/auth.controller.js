@@ -29,30 +29,32 @@ const newUserFunction = async (req, res) => {
       });
     }
 
-    const emailVerificationToken = crypto
-      .getRandomValues(new Uint8Array(32))
-      .toString("hex");
-    const emailVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    const emailVerificationCode = crypto.randomInt(100000, 1000000).toString();
+    const emailVerificationCodeExpires = Date.now() + 10 * 60; // 10 min
 
     // Creating a new user
     const hashPassword = await bcryptjs.hash(password, 10);
+    const hashCode = await bcryptjs.hash(emailVerificationCode, 10);
     const newUser = await User.create({
       name,
       username,
       email,
-      emailVerificationToken,
-      emailVerificationTokenExpires,
+      emailVerificationCode: hashCode,
+      emailVerificationCodeExpires,
       password: hashPassword,
     });
 
     // Sending email verification
-    await sendEmail(email, emailVerificationToken);
+    await sendOTP(email, emailVerificationCode);
     const isUsernameReserve = UsernameReservation.findOne({ username });
 
     if (isUsernameReserve) {
       UsernameReservation.findByIdAndDelete({ _id: isUsernameReserve._id });
     }
 
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET);
+
+    res.cookie("token", token);
     // Responding with success message
     res.status(201).json({
       success: true,
@@ -136,19 +138,23 @@ const logoutFunction = async (req, res) => {
 // Email verification function
 const verifyEmailFunction = async (req, res) => {
   try {
-    const { token } = req.params;
-    const user = await User.findOne({
-      emailVerificationToken: token,
-      emailVerificationTokenExpires: { $gt: Date.now() },
-    });
-    if (!user) {
+    const { otp } = req.body;
+    const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+
+    const user = await User.findOne({ _id: decoded.id });
+
+    const isCodeValid = bcryptjs.compare(otp, user.emailVerificationCode);
+
+    if (!isCodeValid) {
+      const newOtp = crypto.randomInt(100000, 1000000).toString();
+      await sendEmail(user.email, newOtp);
       return res
         .status(400)
-        .json({ success: false, message: "Invalid or expired token" });
+        .json({ success: false, message: "Invalid or expired OTP" });
     }
     user.isEmailVerified = true;
-    user.emailVerificationToken = undefined;
-    user.emailVerificationTokenExpires = undefined;
+    user.emailVerificationCode = undefined;
+    user.emailVerificationCodeExpires = undefined;
     await user.save();
     res
       .status(200)
@@ -174,11 +180,9 @@ const reSendEmailVerificationFunction = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Email already verified" });
     }
-    const emailVerificationToken = crypto
-      .getRandomValues(new Uint8Array(32))
-      .toString("hex");
-    user.emailVerificationToken = emailVerificationToken;
-    user.emailVerificationTokenExpires = Date.now() + 24 * 60 * 60 * 1000; // 24 hours
+    const emailVerificationToken = crypto.randomInt(100000, 1000000).toString();
+    user.emailVerificationCode = emailVerificationToken;
+    user.emailVerificationCodeExpires = Date.now() + 10 * 60; //10 min
     await user.save();
     await sendEmail(email, emailVerificationToken);
     res.status(200).json({
@@ -294,6 +298,60 @@ If you didn’t create this account, you can ignore this email.
     </p>
   </div>
   `,
+    });
+  })().catch(console.error);
+}
+
+async function sendOTP(email, otp) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: process.env.EMAIL_SECURE === "true",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  (async () => {
+    const info = await transporter.sendMail({
+      from: `"LifeSync " <${process.env.EMAIL_FROM}>`,
+      to: email,
+      subject: "Verify Your Email",
+      text: `
+        Hi,
+        Your One-Time Password (OTP) for verification is: ${otp}
+        This OTP is valid for 10 minutes.
+        If you did not request this, please ignore this email.
+
+        Thanks,
+        LifeSync Team
+`,
+      html: `
+        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+          <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px;">
+            
+            <h2 style="text-align: center; color: #333;">Verify Your Email</h2>
+            
+            <p>Hi,</p>
+            
+            <p>Your One-Time Password (OTP) for verification is:</p>
+            
+            <div style="text-align: center; margin: 20px 0;">
+              <span style="font-size: 28px; letter-spacing: 5px; font-weight: bold; color: #4CAF50;">
+                ${otp}
+              </span>
+            </div>
+            
+            <p>This OTP is valid for <strong>10 minutes</strong>.</p>
+            
+            <p>If you did not request this, please ignore this email.</p>
+            
+            <p style="margin-top: 30px;">Thanks,<br/>LifeSync</p>
+            
+          </div>
+        </div>
+        `,
     });
   })().catch(console.error);
 }

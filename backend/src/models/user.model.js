@@ -7,8 +7,8 @@ const userSchema = new mongoose.Schema(
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
     isEmailVerified: { type: Boolean, default: false },
-    emailVerificationToken: { type: String },
-    emailVerificationTokenExpires: { type: Date },
+    emailVerificationCode: { type: String },
+    emailVerificationCodeExpires: { type: Date },
 
     // Admin approval fields
     isApproved: { type: Boolean, default: true },
