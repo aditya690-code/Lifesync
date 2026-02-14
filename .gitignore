@@ -32,6 +32,8 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+.git/
+
 
 # ========================
 # Build / Output folders

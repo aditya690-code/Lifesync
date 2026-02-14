@@ -2,11 +2,12 @@ const express = require("express");
 const calendarControllers = require("../controllers/calendar.controller");
 const router = express.Router();
 const { isUserLogin } = require("../middleware/auth.middleware");
+const wrapAsync = require("../middleware/wrapAsync");
 
 router.post(
   "/:date/:month/:year",
   isUserLogin,
-  calendarControllers.getDataByDate,
+  wrapAsync(calendarControllers.getDataByDate),
 );
 
 module.exports = router;

@@ -6,7 +6,7 @@ const authMiddleware = require("../middleware/authValidation.middleware.js");
 const { isUserLogin } = require("../middleware/auth.middleware");
 
 // Check username available or not
-router.post("/username-available", authControllers.checkUsername);
+router.post("/username-available", wrapAsync(authControllers.checkUsername));
 
 // Login user
 router.post(
@@ -26,7 +26,7 @@ router.post(
 router.post("/logout", isUserLogin, wrapAsync(authControllers.logout));
 
 // Is User logged in or not
-router.get("/me", isUserLogin, authControllers.isUserLoggedIn);
+router.get("/me", isUserLogin, wrapAsync(authControllers.isUserLoggedIn));
 
 // router.post("/forgot-password", );
 
