@@ -27,6 +27,7 @@ const getDataByDate = async (req, res) => {
       59,
       999,
     );
+
     // Finding notes for the user within the specified date range
     const [notes, journals, tasks, expenses] = await Promise.all([
       Note.find({ userId: req.user.id, createdAt: { $gte: start, $lte: end } }),
@@ -40,6 +41,8 @@ const getDataByDate = async (req, res) => {
         createdAt: { $gte: start, $lte: end },
       }),
     ]);
+
+  
 
     res.status(200).json({
       success: true,

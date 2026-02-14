@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const authControllers = require("../controllers/auth.controller");
-const wrapAsync = require("../utils/wrapAsync");
+const wrapAsync = require("../middleware/wrapAsync.js");
 const authMiddleware = require("../middleware/authValidation.middleware.js");
 const { isUserLogin } = require("../middleware/auth.middleware");
 
@@ -40,6 +40,10 @@ router.post(
 );
 
 // Verify email token
-router.post("/verify-email", wrapAsync(authControllers.verifyEmail));
+router.post(
+  "/verify-email",
+  isUserLogin,
+  wrapAsync(authControllers.verifyEmail),
+);
 
 module.exports = router;

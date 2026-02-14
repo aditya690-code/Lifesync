@@ -1,7 +1,7 @@
 const express = require("express");
 const Expenses = require("../models/expenses.model");
 const router = express.Router();
-const wrapAsync = require("../utils/wrapAsync");
+const wrapAsync = require("../middleware/wrapAsync.js");
 const { createExpense } = require("../controllers/expenses.controller.js");
 
 router.post("/", wrapAsync(createExpense));
@@ -12,6 +12,5 @@ router.get("/", async (req, res) => {
 
   res.json(expenses);
 });
-
 
 module.exports = router;

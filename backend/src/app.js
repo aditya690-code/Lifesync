@@ -29,6 +29,7 @@ app.use("/chatbot", require("./routes/chatbot.routes.js"));
 app.use("/calendar", require("./routes/calendar.routes.js"));
 app.use("/home", require("./routes/home.routes.js"));
 app.use("/journal", require("./routes/journal.routes.js"));
+app.use("/notes", require("./routes/notes.routes.js"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

@@ -12,6 +12,8 @@ const isUserLogin = async (req, res, next) => {
     }
     const decode = jwt.verify(token, process.env.JWT_SECRET);
     req.user = decode;
+    console.log('login middleware')
+
     next();
   } catch (error) {
     console.log(error);

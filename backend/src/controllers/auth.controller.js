@@ -139,23 +139,47 @@ const logoutFunction = async (req, res) => {
 const verifyEmailFunction = async (req, res) => {
   try {
     const { otp } = req.body;
+
     const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
 
     const user = await User.findOne({ _id: decoded.id });
 
-    const isCodeValid = bcryptjs.compare(otp, user.emailVerificationCode);
+    if (user.isEmailVerified) {
+      return res
+        .status(403)
+        .json({ success: false, message: "User email already verified " });
+    }
 
-    if (!isCodeValid) {
+    const isCodeValid = await bcryptjs.compare(otp, user.emailVerificationCode);
+
+    const createdAt = user.emailVerificationCodeExpires;
+    const now = new Date();
+
+    const diff = now - createdAt;
+    let emailExpire;
+
+    if (diff > 10 * 60 * 1000) {
+      emailExpire = true;
+    } else {
+      emailExpire = false;
+    }
+
+    if (!isCodeValid || emailExpire) {
       const newOtp = crypto.randomInt(100000, 1000000).toString();
-      await sendEmail(user.email, newOtp);
+      user.emailVerificationCode = await bcryptjs.hash(newOtp, 10);
+      user.emailVerificationCodeExpires = new Date() + 10 * 60;
+      await user.save();
+      await sendOTP(user.email, newOtp);
       return res
         .status(400)
         .json({ success: false, message: "Invalid or expired OTP" });
     }
+
     user.isEmailVerified = true;
     user.emailVerificationCode = undefined;
     user.emailVerificationCodeExpires = undefined;
     await user.save();
+
     res
       .status(200)
       .json({ success: true, message: "Email verified successfully" });
@@ -164,6 +188,7 @@ const verifyEmailFunction = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error." });
   }
 };
+
 // Sending email verification token
 const reSendEmailVerificationFunction = async (req, res) => {
   try {
@@ -184,7 +209,7 @@ const reSendEmailVerificationFunction = async (req, res) => {
     user.emailVerificationCode = emailVerificationToken;
     user.emailVerificationCodeExpires = Date.now() + 10 * 60; //10 min
     await user.save();
-    await sendEmail(email, emailVerificationToken);
+    await sendOTP(email, emailVerificationToken);
     res.status(200).json({
       success: true,
       message: "Verification email resent successfully",
@@ -303,55 +328,59 @@ If you didn’t create this account, you can ignore this email.
 }
 
 async function sendOTP(email, otp) {
-  const transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST,
-    port: process.env.EMAIL_PORT,
-    secure: process.env.EMAIL_SECURE === "true",
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS,
-    },
-  });
-
-  (async () => {
-    const info = await transporter.sendMail({
-      from: `"LifeSync " <${process.env.EMAIL_FROM}>`,
-      to: email,
-      subject: "Verify Your Email",
-      text: `
-        Hi,
-        Your One-Time Password (OTP) for verification is: ${otp}
-        This OTP is valid for 10 minutes.
-        If you did not request this, please ignore this email.
-
-        Thanks,
-        LifeSync Team
-`,
-      html: `
-        <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
-          <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px;">
-            
-            <h2 style="text-align: center; color: #333;">Verify Your Email</h2>
-            
-            <p>Hi,</p>
-            
-            <p>Your One-Time Password (OTP) for verification is:</p>
-            
-            <div style="text-align: center; margin: 20px 0;">
-              <span style="font-size: 28px; letter-spacing: 5px; font-weight: bold; color: #4CAF50;">
-                ${otp}
-              </span>
-            </div>
-            
-            <p>This OTP is valid for <strong>10 minutes</strong>.</p>
-            
-            <p>If you did not request this, please ignore this email.</p>
-            
-            <p style="margin-top: 30px;">Thanks,<br/>LifeSync</p>
-            
-          </div>
-        </div>
-        `,
-    });
-  })().catch(console.error);
+  console.log(otp);
 }
+
+// async function sendOTP(email, otp) {
+//   const transporter = nodemailer.createTransport({
+//     host: process.env.EMAIL_HOST,
+//     port: process.env.EMAIL_PORT,
+//     secure: process.env.EMAIL_SECURE === "true",
+//     auth: {
+//       user: process.env.EMAIL_USER,
+//       pass: process.env.EMAIL_PASS,
+//     },
+//   });
+
+//   (async () => {
+//     const info = await transporter.sendMail({
+//       from: `"LifeSync " <${process.env.EMAIL_FROM}>`,
+//       to: email,
+//       subject: "Verify Your Email",
+//       text: `
+//           Hi,
+//           Your One-Time Password (OTP) for verification is: ${otp}
+//           This OTP is valid for 10 minutes.
+//           If you did not request this, please ignore this email.
+
+//           Thanks,
+//           LifeSync Team
+//   `,
+//       html: `
+//           <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4;">
+//             <div style="max-width: 500px; margin: auto; background: #ffffff; padding: 20px; border-radius: 8px;">
+
+//               <h2 style="text-align: center; color: #333;">Verify Your Email</h2>
+
+//               <p>Hi,</p>
+
+//               <p>Your One-Time Password (OTP) for verification is:</p>
+
+//               <div style="text-align: center; margin: 20px 0;">
+//                 <span style="font-size: 28px; letter-spacing: 5px; font-weight: bold; color: #4CAF50;">
+//                   ${otp}
+//                 </span>
+//               </div>
+
+//               <p>This OTP is valid for <strong>10 minutes</strong>.</p>
+
+//               <p>If you did not request this, please ignore this email.</p>
+
+//               <p style="margin-top: 30px;">Thanks,<br/>LifeSync</p>
+
+//             </div>
+//           </div>
+//           `,
+//     });
+//   })().catch(console.error);
+// }
