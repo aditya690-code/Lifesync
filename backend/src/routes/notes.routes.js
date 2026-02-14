@@ -5,9 +5,15 @@ const wrapAsync = require("../middleware/wrapAsync");
 
 const router = express.Router();
 // Add routes
+router
+  .route("/")
+  .post(isUserLogin, wrapAsync(noteController.createNote))
+  .put(isUserLogin, wrapAsync(noteController.editNote));
+
+router.delete("/:noteId", isUserLogin, wrapAsync(noteController.deleteNote));
+
 router.get("/:skip/:limit", isUserLogin, wrapAsync(noteController.getAllNotes));
-// routes.post('/', SessionController.store);
-// routes.put('/', SessionController.store);
+
 // routes.delete('/', SessionController.store);
 
 module.exports = router;

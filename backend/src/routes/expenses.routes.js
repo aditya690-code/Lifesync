@@ -1,16 +1,12 @@
 const express = require("express");
-const Expenses = require("../models/expenses.model");
+const { isUserLogin } = require("../middleware/auth.middleware.js");
 const router = express.Router();
 const wrapAsync = require("../middleware/wrapAsync.js");
-const { createExpense } = require("../controllers/expenses.controller.js");
+const expensesController = require("../controllers/expenses.controller.js");
 
-router.post("/", wrapAsync(createExpense));
-
-router.get("/", async (req, res) => {
-  const userId = "698888d97e250684d5470cab";
-  const expenses = await Expenses.find({ userId });
-
-  res.json(expenses);
-});
+router
+  .route("/")
+  .get(isUserLogin, wrapAsync(expensesController.getAllNotes))
+  .post(isUserLogin, wrapAsync(expensesController.createExpense));
 
 module.exports = router;

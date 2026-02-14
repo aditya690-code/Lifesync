@@ -1,41 +1,33 @@
 const Expenses = require("../models/expenses.model.js");
-const User = require("../models/user.model.js");
-const jwt = require("jsonwebtoken");
 
 const createExpenses = async (req, res) => {
-  const { title, content, amount, date } = req.body;
-  const newExpense = new Expenses({
+  const { title, content, amount, date = new Date() } = req.body;
+  const newExpense = await Expenses.create({
     title,
     content,
     amount,
+    createdAt: date,
+    userId: req.user.id,
   });
 
-  const cookieToken = req.cookies.token;
-  const userId = req.cookies.userId;
+  res.status(201).json({ success: true, message: "created", newExpense });
+};
 
-  if (!cookieToken) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
-  }
-
+const getAllNotes = async (req, res) => {
   try {
-    const decoded = jwt.verify(cookieToken, process.env.JWT_SECRET);
-    if (decoded.userId !== userId) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-  } catch (err) {
-    return res.status(401).json({ success: false, message: "Unauthorized" });
+    const expenses = await Expenses.find({ userId: req.user.id });
+
+    res.status(200).json({ success: true, expenses });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
-
-  const user = await User.findById(userId);
-
-  user.expenses.push(newExpense._id);
-  await user.save();
-
-  await newExpense.save();
-
-  res.status(201).json({ success: true, message: "created" });
 };
 
 module.exports = {
   createExpense: createExpenses,
+  getAllNotes,
 };
