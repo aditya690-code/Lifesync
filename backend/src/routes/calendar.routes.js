@@ -10,4 +10,11 @@ router.post(
   wrapAsync(calendarControllers.getDataByDate),
 );
 
+router.post(
+  "/history/:year/:month",
+  isUserLogin,
+  wrapAsync(calendarControllers.getDataByMonth),
+);
+
+
 module.exports = router;
